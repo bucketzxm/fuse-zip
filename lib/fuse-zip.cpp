@@ -53,6 +53,15 @@ static const size_t FILE_COMMENT_XATTR_NAME_LENZ = 13; // length including NULL-
 
 using namespace std;
 
+inline FuseZipData *get_data() {
+    return (FuseZipData*)fuse_get_context()->private_data;
+}
+
+inline struct zip *get_zip() {
+    return get_data()->m_zip;
+}
+
+
 //TODO: Move printf-s out this function
 FuseZipData *initFuseZip(const char *program, const char *fileName,
         bool readonly, bool force_precise_time) {
@@ -109,18 +118,10 @@ FuseZipData *initFuseZip(const char *program, const char *fileName,
 
 void *fusezip_init(struct fuse_conn_info *conn) {
     (void) conn;
-    FuseZipData *data = (FuseZipData*)fuse_get_context()->private_data;
-    syslog(LOG_INFO, "Mounting file system on %s (cwd=%s)", data->m_archiveName, data->m_cwd.c_str());
-    return data;
+    syslog(LOG_INFO, "Mounting file system on %s (cwd=%s)", get_data()->m_archiveName, get_data()->m_cwd.c_str());
+    return get_data();
 }
 
-inline FuseZipData *get_data() {
-    return (FuseZipData*)fuse_get_context()->private_data;
-}
-
-inline struct zip *get_zip() {
-    return get_data()->m_zip;
-}
 
 void fusezip_destroy(void *data) {
     FuseZipData *d = (FuseZipData*)data;
