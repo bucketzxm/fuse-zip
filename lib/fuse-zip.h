@@ -20,6 +20,8 @@
 #ifndef FUSE_ZIP_H
 #define FUSE_ZIP_H
 
+#define ZIP_PRIVATE_DATA ((class FuseZipData *) fuse_get_context()->private_data)
+
 /**
  * Main functions of fuse-zip file system (to be called by FUSE library)
  */
